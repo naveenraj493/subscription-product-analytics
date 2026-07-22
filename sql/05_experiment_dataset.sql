@@ -59,6 +59,12 @@ SELECT
     u.pre_engagement_7d,
 
     CASE
+        WHEN s.trial_start_date IS NOT NULL
+        THEN 1
+        ELSE 0
+    END AS trial_started,
+
+    CASE
         WHEN s.paid_start_date IS NOT NULL
         THEN 1
         ELSE 0
@@ -69,6 +75,8 @@ SELECT
         THEN 1
         ELSE 0
     END AS retained,
+    
+    s.plan,
 
     COALESCE(ur.revenue, 0) AS revenue
 
@@ -85,3 +93,5 @@ LEFT JOIN user_revenue ur
 
 ORDER BY
     ea.user_id;
+
+    
