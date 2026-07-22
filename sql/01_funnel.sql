@@ -156,3 +156,47 @@ LEFT JOIN subscriptions s
 GROUP BY COALESCE(u.country, 'Unknown')
 
 ORDER BY signup_to_paid_conversion_rate DESC;
+
+
+-- =========================================================
+-- Query 5: Funnel Stages for Tableau
+-- =========================================================
+
+SELECT
+    1 AS stage_order,
+    'Signup' AS stage,
+    COUNT(DISTINCT u.user_id) AS users
+
+FROM users u
+
+UNION ALL
+
+SELECT
+    2,
+    'Trial',
+    COUNT(DISTINCT s.user_id)
+        FILTER (WHERE s.trial_start_date IS NOT NULL)
+
+FROM subscriptions s
+
+UNION ALL
+
+SELECT
+    3,
+    'Paid',
+    COUNT(DISTINCT s.user_id)
+        FILTER (WHERE s.paid_start_date IS NOT NULL)
+
+FROM subscriptions s
+
+UNION ALL
+
+SELECT
+    4,
+    'Retained',
+    COUNT(DISTINCT s.user_id)
+        FILTER (WHERE s.status = 'active')
+
+FROM subscriptions s
+
+ORDER BY stage_order;
