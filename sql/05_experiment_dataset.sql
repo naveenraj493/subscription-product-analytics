@@ -78,6 +78,8 @@ SELECT
     
     s.plan,
 
+    s.monthly_price,
+
     COALESCE(ur.revenue, 0) AS revenue
 
 FROM experiment_assignment ea
